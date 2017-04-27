@@ -22,3 +22,46 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+
+# FrontEnd
+FrontEnd/dist
+FrontEnd/tmp
+FrontEnd/out-tsc
+
+# dependencies
+FrontEnd/node_modules
+
+# IDEs and editors
+FrontEnd/.idea
+FrontEnd.project
+FrontEnd.classpath
+FrontEnd.c9/
+*.launch
+FrontEnd.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+FrontEnd.vscode/*
+!FrontEnd.vscode/settings.json
+!FrontEnd.vscode/tasks.json
+!FrontEnd.vscode/launch.json
+!FrontEnd.vscode/extensions.json
+
+# misc
+FrontEnd/.sass-cache
+FrontEnd/connect.lock
+FrontEnd/coverage
+FrontEnd/libpeerconnection.log
+FrontEnd/npm-debug.log
+FrontEnd/testem.log
+FrontEnd/typings
+
+# e2e
+FrontEnd/e2e/*.js
+FrontEnd/e2e/*.map
+
+# System Files
+FrontEnd/.DS_Store
+FrontEnd/.Thumbs.db
+
