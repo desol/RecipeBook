@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { AppComponent } from '../scripts/app.component';
+import { Login } from '../Components/lhj.login';
 
 @NgModule({
   declarations: [
-    AppComponent
+    Login
   ],
   imports: [
     BrowserModule,
@@ -15,6 +15,8 @@ import { AppComponent } from '../scripts/app.component';
     HttpModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    Login
+  ]
 })
 export class AppModule { }
