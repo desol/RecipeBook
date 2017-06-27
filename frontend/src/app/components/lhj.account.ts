@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 // import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
-  selector: 'router-outlet',
+  selector: 'app-lhj-account',
   templateUrl: '../pages/lhj.account.html',
   styleUrls: ['../styles/lhj.account.css'],
   // animations: [
@@ -17,7 +17,7 @@ import { Component } from '@angular/core';
   //   ])
   // ]
 })
-export class Account {
+export class AccountComponent {
   title = 'Daddy is a big ol stinker.';
 }
 // function AnimateTitle() {

@@ -1,20 +1,21 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, DefaultUrlSerializer } from '@angular/router';
 
-import { Login } from '../components/lhj.login';
-import { Account } from '../components/lhj.account';
+import { LoginComponent } from '../components/lhj.login';
+import { AccountComponent } from '../components/lhj.account';
 
 import { AuthGuard } from '../services/authguard';
 import { RootPathGuard } from '../services/rootpathguard';
 
 const AppRoutes: Routes = [
-  { path: '', component: Login, canActivate: [RootPathGuard] },
-  { path: 'Login', component: Login },
-  { path: 'Account', component: Account, canActivate: [AuthGuard] },
+  { path: '', component: LoginComponent, canActivate: [RootPathGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+  { path: '**', component: AccountComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(AppRoutes, {useHash: true})],
+  imports: [RouterModule.forRoot(AppRoutes, { useHash: true })],
   exports: [RouterModule]
 })
 
