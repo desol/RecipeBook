@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'router-outlet',
-  templateUrl: '../pages/lhj.login.html',
-  styleUrls: ['../styles/lhj.login.css'],
+  templateUrl: '../pages/lhj.account.html',
+  styleUrls: ['../styles/lhj.account.css'],
   // animations: [
   //   trigger('TitleAnimation', [
   //     state('small', style({
@@ -17,7 +17,7 @@ import { Component } from '@angular/core';
   //   ])
   // ]
 })
-export class Login {
+export class Account {
   title = 'Daddy is a big ol stinker.';
 }
 // function AnimateTitle() {
