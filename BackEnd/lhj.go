@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	handlers "github.com/lhj/BackEnd/Handlers"
+	"github.com/lhj/backEnd/handlers"
 )
 
 func main() {

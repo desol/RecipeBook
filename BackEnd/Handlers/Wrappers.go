@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	settings "github.com/RecipeBook/BackEnd/Settings"
+	"github.com/lhj/backEnd/settings"
 )
 
 // Use : Allows the user to pass which ever wrappers are necessary for a Handler and applies the wrappers to the Handler.
@@ -50,7 +50,7 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 func AuthWrap(h http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Obtain the credentials needed for this endpoint.
-		correctUsername, correctPassword := settings.GetCredentials()
+		/correctUsername, correctPassword := settings.GetCredentials()
 		// Obtain the user's credentials.
 		username, password, _ := r.BasicAuth()
 
