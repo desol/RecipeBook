@@ -1,22 +1,16 @@
-html,body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+.login-input-row {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 3em;
 }
-.container{
-    width: 100％;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #000000;
+
+.login-input {
+  border: inset;
 }
-p{
-    width: 200px;
-    background: lightgray;
-    margin: 100px auto;
-    text-align: center;
-    padding: 20px;
-    font-size: 1.5em
+
+.login-button-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1em;
 }

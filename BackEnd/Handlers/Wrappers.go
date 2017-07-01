@@ -4,8 +4,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-
-	"github.com/lhj/backEnd/settings"
 )
 
 // Use : Allows the user to pass which ever wrappers are necessary for a Handler and applies the wrappers to the Handler.
@@ -49,19 +47,19 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 // AuthWrap : Checks the user's header for authentication prior to allowing the user to reach the endpoint.
 func AuthWrap(h http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Obtain the credentials needed for this endpoint.
-		/correctUsername, correctPassword := settings.GetCredentials()
 		// Obtain the user's credentials.
-		username, password, _ := r.BasicAuth()
+		// username, password, _ := r.BasicAuth()
 
-		// Check if the user's credentials and the endpoint's required credentials match.
-		if username != correctUsername || password != correctPassword {
-			// If the credentials don't match, then send an error to the caller.
-			http.Error(w, "authorization failed", http.StatusUnauthorized)
-			// Log the fact a failed log in attempt happened.
-			log.Printf("AUTHORIZATION FAILED~ Username: %s & Password: %s", username, password)
-			return
-		}
+		// token, err :=
+
+		// // Check if the user's credentials and the endpoint's required credentials match.
+		// if username != correctUsername || password != correctPassword {
+		// 	// If the credentials don't match, then send an error to the caller.
+		// 	http.Error(w, "authorization failed", http.StatusUnauthorized)
+		// 	// Log the fact a failed log in attempt happened.
+		// 	log.Printf("AUTHORIZATION FAILED~ Username: %s & Password: %s", username, password)
+		// 	return
+		// }
 		h.ServeHTTP(w, r)
 	})
 }

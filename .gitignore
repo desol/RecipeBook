@@ -3,10 +3,13 @@
 *.a
 *.so
 
+# Settings
+settings.development.json
+settings.production.json
+
 # Folders
 _obj
 _test
-Settings/
 
 # Architecture specific extensions/prefixes
 *.[568vq]

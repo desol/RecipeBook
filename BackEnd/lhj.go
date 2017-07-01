@@ -4,21 +4,23 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/lhj/backEnd/handlers"
+	"github.com/lhj/backend/models"
 )
 
 func main() {
 	debug := true
 
+	models.InitDB("lhj.db")
+
 	// The router used to handle user requests.
-	router := mux.NewRouter()
+	router := http.NewServeMux()
 
 	// The end points that have been implemented.
-	handles := handlers.CreateAllHandlers()
+	handlers.CreateAllHandlers()
 
 	// Apply the endpoints to the router.
-	for _, handle := range handles.Handles {
+	for _, handle := range handles.Handlers {
 		router.HandleFunc(handle.Route, handle.Handler)
 	}
 
