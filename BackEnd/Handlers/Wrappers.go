@@ -16,7 +16,7 @@ func (h *Handler) Use(middleware ...func(http.HandlerFunc) http.HandlerFunc) {
 }
 
 // RecoverWrap : Recovers if an endpoint panics and logs the error.
-func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
+func recoverWrap(h http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var err error // The error which caused the panic.
 
@@ -40,26 +40,6 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 				http.Error(w, err.Error(), http.StatusInternalServerError) // Notify the caller that an error occurred.
 			}
 		}()
-		h.ServeHTTP(w, r)
-	})
-}
-
-// AuthWrap : Checks the user's header for authentication prior to allowing the user to reach the endpoint.
-func AuthWrap(h http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Obtain the user's credentials.
-		// username, password, _ := r.BasicAuth()
-
-		// token, err :=
-
-		// // Check if the user's credentials and the endpoint's required credentials match.
-		// if username != correctUsername || password != correctPassword {
-		// 	// If the credentials don't match, then send an error to the caller.
-		// 	http.Error(w, "authorization failed", http.StatusUnauthorized)
-		// 	// Log the fact a failed log in attempt happened.
-		// 	log.Printf("AUTHORIZATION FAILED~ Username: %s & Password: %s", username, password)
-		// 	return
-		// }
 		h.ServeHTTP(w, r)
 	})
 }

@@ -4,14 +4,21 @@ import (
 	"log"
 	"net/http"
 
+	"fmt"
+
 	"github.com/lhj/backEnd/handlers"
+	"github.com/lhj/backEnd/settings"
 	"github.com/lhj/backend/models"
 )
 
 func main() {
 	debug := true
 
-	models.InitDB("lhj.db")
+	// Init the application's settings.
+	settings.Populate(debug)
+
+	// Init the application's storm DB
+	models.InitDB(settings.Settings.StormDB)
 
 	// The router used to handle user requests.
 	router := http.NewServeMux()
@@ -20,20 +27,22 @@ func main() {
 	handlers.CreateAllHandlers()
 
 	// Apply the endpoints to the router.
-	for _, handle := range handles.Handlers {
+	for _, handle := range handlers.Handlers {
+		fmt.Println(handle.Route)
 		router.HandleFunc(handle.Route, handle.Handler)
 	}
-
-	address := settings.GetSiteAddress(debug)
-	timeOut := settings.GetTimeOutAmount(debug)
 
 	// Create the server and set the timeout limits.
 	srv := &http.Server{
 		Handler:      router,
-		Addr:         address,
-		WriteTimeout: timeOut,
-		ReadTimeout:  timeOut,
+		Addr:         settings.Settings.Port,
+		WriteTimeout: settings.Settings.ServerTimeout,
+		ReadTimeout:  settings.Settings.ServerTimeout,
+		IdleTimeout:  settings.Settings.ServerIdleTimeout,
 	}
 
+	fmt.Println(srv.Addr)
+
+	// Wait to serve
 	log.Fatal(srv.ListenAndServe())
 }

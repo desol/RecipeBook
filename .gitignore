@@ -69,3 +69,4 @@ FrontEnd/e2e/*.map
 FrontEnd/.DS_Store
 FrontEnd/.Thumbs.db
 
+backend/debug

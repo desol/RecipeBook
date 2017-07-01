@@ -1,12 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "name": "front-end"
+    "name": "lhj"
   },
   "apps": [
     {
       "root": "src",
-      "outDir": "dist",
+      "outDir": "./../backend/static",
       "assets": [
         "assets",
         "favicon.ico"
