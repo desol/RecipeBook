@@ -70,3 +70,5 @@ FrontEnd/.DS_Store
 FrontEnd/.Thumbs.db
 
 backend/debug
+backend/test.lhj.db
+backend/test.lhj.db.lock

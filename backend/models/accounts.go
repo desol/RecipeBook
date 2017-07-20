@@ -16,8 +16,8 @@ type UserInfo struct {
 	Email          string `storm:"unique"`
 	DisplayName    string `storm:"unique"`
 	Password       []byte
-	Token          [16]byte
-	TokenExpires   time.Time
+	Token          []byte
+	TokenExpires   int64
 	AccountCreated time.Time
 	FailedAttempts int
 	Locked         bool
@@ -25,13 +25,15 @@ type UserInfo struct {
 	Active         bool
 }
 
+// UserPermission : A user's mapping to a site permission
 type UserPermission struct {
 	Pk         int `storm:"id,increment,index"`
 	Permission int
-	User       string
+	User       int
 	Active     bool
 }
 
+// Permission : A site permission
 type Permission struct {
 	Pk     int `storm:"id,increment,index"`
 	Name   string
@@ -40,11 +42,12 @@ type Permission struct {
 
 // Identity : A user's ID
 type Identity struct {
-	Email       string    `json:"email"`
-	DisplayName string    `json:"displayname"`
-	Token       [16]byte  `json:"token"`
-	Expires     time.Time `json:"expires"`
-	Password    string    `json:"password"`
+	Pk          int    `json:"pk"`
+	Email       string `json:"email"`
+	DisplayName string `json:"displayname"`
+	Token       string `json:"token"`
+	Expires     int64  `json:"expires"`
+	Password    string `json:"password"`
 }
 
 // Login logs a user into the database
@@ -77,15 +80,18 @@ func Login(email string, pw string) (Identity, error) {
 
 	uid := uuid.NewV4()
 
-	user.Token = uid
-	user.TokenExpires = time.Now().Add(time.Hour * 120)
+	user.Token, err = uid.MarshalText()
+	if err != nil {
+		return Identity{}, err
+	}
+	user.TokenExpires = time.Now().Add(time.Hour * 120).UTC().Unix()
 
 	err = db.Update(&user)
 	if err != nil {
 		return Identity{}, err
 	}
 
-	return Identity{Email: user.Email, DisplayName: user.DisplayName, Token: uid, Expires: user.TokenExpires}, nil
+	return Identity{Pk: user.Pk, Email: user.Email, DisplayName: user.DisplayName, Token: string(user.Token), Expires: user.TokenExpires}, nil
 }
 
 // CheckToken : Checks if a user's session is valid
@@ -93,17 +99,18 @@ func CheckToken(frontid *Identity) error {
 	id := *frontid
 	var user UserInfo
 
-	err := db.One("Email", id.Email, &user)
+	err := db.One("Pk", id.Pk, &user)
 	if err != nil {
 		return err
 	}
 
-	if id.Token != user.Token || time.Now().After(user.TokenExpires) || !id.Expires.Equal(user.TokenExpires) {
+	if id.Token != string(user.Token) || time.Now().UTC().Unix() > user.TokenExpires || id.Expires != user.TokenExpires {
 		return fmt.Errorf("Valid Token Required")
 	}
 
-	id.Expires = time.Now().Add(time.Hour * 120)
-	err = db.Update(&id)
+	id.Expires = time.Now().Add(time.Hour * 120).UTC().Unix()
+	user.TokenExpires = id.Expires
+	err = db.Update(&user)
 	if err != nil {
 		return err
 	}
@@ -126,11 +133,16 @@ func CheckPermission(email string, permission int) error {
 // RegisterAccount : Creates a new account.
 func RegisterAccount(id *Identity) error {
 	var user UserInfo
+	var err error
 
 	uid := uuid.NewV4()
-	user.Token, id.Token = uid, uid
+	user.Token, err = uid.MarshalText()
+	if err != nil {
+		return err
+	}
+	id.Token = string(user.Token)
 
-	expires := time.Now().Add(time.Hour * 120)
+	expires := time.Now().Add(time.Hour * 120).UTC().Unix()
 	user.TokenExpires, id.Expires = expires, expires
 
 	pwHash, err := bcrypt.GenerateFromPassword([]byte(strings.TrimSpace(id.Password)), bcrypt.DefaultCost)
@@ -157,14 +169,27 @@ func RegisterAccount(id *Identity) error {
 	return nil
 }
 
-func UpdateAccount() error {
-
+// UpdateAccount : Updates a user's account
+func UpdateAccount(user *UserInfo) error {
+	err := db.Update(user)
+	return err
 }
 
-func UpdateUserPermission() error {
-
+// AddUserPermission : Creates a user and permission relationship
+func AddUserPermission(user, perm int) error {
+	up := UserPermission{User: user, Permission: perm, Active: true}
+	err := db.Save(&up)
+	return err
 }
 
-func UpdatePermission() error {
+// UpdateUserPermission : Updates a user's permission
+func UpdateUserPermission(up *UserPermission) error {
+	err := db.Update(up)
+	return err
+}
 
+// UpdatePermission Updates a permission
+func UpdatePermission(perm *Permission) error {
+	err := db.Update(perm)
+	return err
 }

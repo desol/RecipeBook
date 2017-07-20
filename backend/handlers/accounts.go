@@ -13,7 +13,6 @@ import (
 	"context"
 
 	"github.com/lhj/backend/models"
-	"github.com/satori/go.uuid"
 )
 
 func createAccountHandlers() {
@@ -58,16 +57,20 @@ func auth(w http.ResponseWriter, r *http.Request) {
 	case "PATCH":
 		var err error
 		header := r.Header
+		id.Pk, err = strconv.Atoi(header.Get("pk"))
+		if err != nil {
+			http.Error(w, "Failed to read in PK", http.StatusInternalServerError)
+		}
 		id.Email = header.Get("email")
 		id.DisplayName = header.Get("displayname")
-		id.Token, err = uuid.FromBytes([]byte(header.Get("token")))
+		id.Token = header.Get("token")
 		if err != nil {
-			http.Error(w, "Invalid Token.", http.StatusUnauthorized)
+			http.Error(w, "Invalid Token. Message: "+err.Error(), http.StatusUnauthorized)
 			return
 		}
-		id.Expires, err = time.Parse("", header.Get("expires"))
+		id.Expires, err = strconv.ParseInt(header.Get("expires"), 10, 64)
 		if err != nil {
-			http.Error(w, "Invalid Token Expiration.", http.StatusUnauthorized)
+			http.Error(w, "Invalid Token Expiration: "+err.Error(), http.StatusUnauthorized)
 			return
 		}
 		err = models.CheckToken(&id)
@@ -75,11 +78,34 @@ func auth(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		header.Set("expires", id.Expires.String())
+		header.Set("expires", string(id.Expires))
 
 	// Add a permission to the user.
 	case "PUT":
-		perm := make(UserPermission)
+		var perm models.Permission
+		var err error
+		perm.Active, err = strconv.ParseBool(r.Form.Get("active"))
+		if err != nil {
+			http.Error(w, "Invalid active value.", http.StatusNotAcceptable)
+			return
+		}
+		perm.Pk, err = strconv.Atoi(r.Form.Get("pk"))
+		if err != nil {
+			http.Error(w, "Invalid pk.", http.StatusNotAcceptable)
+			return
+		}
+		perm.Name = r.Form.Get("name")
+		err = models.UpdatePermission(&perm)
+		if err != nil {
+			http.Error(w, "Failed to update permission", http.StatusInternalServerError)
+			return
+		}
+		jsonReturn, err := json.Marshal(true)
+		if err != nil {
+			http.Error(w, "Failed to make a json bool...", http.StatusInternalServerError)
+			return
+		}
+		w.Write(jsonReturn)
 
 	// Returns if the user is permitted to continue or not
 	case "GET":
@@ -130,8 +156,8 @@ func account(w http.ResponseWriter, r *http.Request) {
 	case "PATCH":
 		user := new(models.UserInfo)
 		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(user)                    // Get the requested password
-		err = models.UpdateAccount(user, admin, token) // Registed the info as a new account
+		err := decoder.Decode(user)      // Get the requested password
+		err = models.UpdateAccount(user) // Registed the info as a new account
 		if err != nil {
 			// Return the error info and don't allow the user to continue
 			http.Error(w, "An unexpected error occurred while updating the account: "+err.Error(), http.StatusInternalServerError)
@@ -152,7 +178,7 @@ func accountWrap(h http.HandlerFunc) http.HandlerFunc {
 		timeoutInSeconds := 120
 		switch r.Method {
 		case "PATCH":
-			id := make(models.Identity)
+			id := new(models.Identity)
 			decoder := json.NewDecoder(r.Body)
 			err := decoder.Decode(id) // Get the requested password
 			if err != nil {
@@ -170,9 +196,9 @@ func accountWrap(h http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 		}
-		ctx, ctxCancel := context.WithTimeout(r.Context, time.Duration(timeoutInSeconds)*time.Second)
+		ctx, ctxCancel := context.WithTimeout(r.Context(), time.Duration(timeoutInSeconds)*time.Second)
 		defer ctxCancel()
-		h.ServeHTTP(w, r.WithContext(timeoutInSeconds))
+		h.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
@@ -181,7 +207,7 @@ func authWrap(h http.HandlerFunc) http.HandlerFunc {
 		timeoutInSeconds := 60
 		switch r.Method {
 		case "PUT":
-			id := make(models.Identity)
+			id := new(models.Identity)
 			decoder := json.NewDecoder(r.Body)
 			err := decoder.Decode(id) // Get the requested password
 			if err != nil {
@@ -199,8 +225,8 @@ func authWrap(h http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 		}
-		ctx, ctxCancel := context.WithTimeout(r.Context, time.Duration(timeoutInSeconds)*time.Second)
+		ctx, ctxCancel := context.WithTimeout(r.Context(), time.Duration(timeoutInSeconds)*time.Second)
 		defer ctxCancel()
-		h.ServeHTTP(w, r.WithContext(timeoutInSeconds))
+		h.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

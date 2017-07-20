@@ -32,7 +32,6 @@ func CreateAllHandlers() {
 func createTestHandlers() {
 	handler.Route = "/tests/testconnection" // Set the path for this handler
 	handler.Handler = pingpong              // Register which function will be triggered
-	handler.Use(RecoverWrap)                // Register which wrappers should be applied when the function is triggered
 	Handlers = append(Handlers, handler)
 }
 
