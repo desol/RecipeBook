@@ -1,14 +1,16 @@
 // Libraries
 import 'hammerjs';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { UrlSerializer } from '@angular/router'
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Component, ViewContainerRef } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MdButtonModule, MdCardModule, MdMenuModule, MdToolbarModule, MdProgressBarModule,
-  MdIconModule, MdInputModule, MdSnackBarModule, MdTooltipModule } from '@angular/material';
+import {
+  MdButtonModule, MdCardModule, MdMenuModule, MdToolbarModule, MdProgressBarModule,
+  MdIconModule, MdInputModule, MdSnackBarModule, MdTooltipModule
+} from '@angular/material';
 
 // Components
 import { LoginComponent } from '../components/lhj.login';
@@ -17,8 +19,6 @@ import { ProgressBarComponent } from '../components/lhj.progressbar'
 
 // Services
 import { Session } from '../services/session';
-import { AuthGuard } from '../services/authguard';
-import { RootPathGuard } from '../services/rootpathguard';
 import { LowerCaseUrlSerializer } from '../services/urlserializer';
 
 // Modules
@@ -43,9 +43,8 @@ export class MainComponent {
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     AppRouting,
-
     BrowserAnimationsModule,
     FlexLayoutModule,
     MdButtonModule,
@@ -60,8 +59,6 @@ export class MainComponent {
   ],
   providers: [
     Session,
-    AuthGuard,
-    RootPathGuard,
     {
       provide: UrlSerializer,
       useClass: LowerCaseUrlSerializer

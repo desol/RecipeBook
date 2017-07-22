@@ -7,9 +7,9 @@ import { Session } from '../services/session'
   styleUrls: ['../styles/lhj.progressbar.css'],
 })
 export class ProgressBarComponent {
-  loading = false;
+  loading = 0;
   constructor(session: Session) {
-    session.PageLoading.subscribe(
+    session.RequestsLoadingCounter.subscribe(
       (load) => {
         this.loading = load;
       }

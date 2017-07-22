@@ -6,9 +6,9 @@ import (
 
 	"fmt"
 
-	"github.com/lhj/backEnd/handlers"
-	"github.com/lhj/backEnd/settings"
-	"github.com/lhj/backend/models"
+	"./handlers"
+	"./models"
+	"./settings"
 )
 
 func main() {

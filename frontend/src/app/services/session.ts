@@ -5,22 +5,29 @@ import { Injectable, EventEmitter } from '@angular/core';
 @Injectable()
 export class Session {
 
-  PageLoading: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+  LoggedInStatus: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+  private LoggedIn = false;
 
-  constructor(private ngRouter: Router) {
-    this.ngRouter.events.filter(event => event instanceof NavigationEnd).subscribe((navEnd) => {
-      this.ShowLoading();
-    });
-    this.ngRouter.events.filter(event => event instanceof NavigationStart).subscribe((navStart) => {
-      this.HideLoading();
-    });
+  RequestsLoadingCounter: EventEmitter<number> = new EventEmitter<number>(false);
+  private RequestsLoading = 0;
+
+  private AddLoading() {
+    this.RequestsLoading += 1;
+    this.RequestsLoadingCounter.emit(this.RequestsLoading);
   }
 
-  private ShowLoading() {
-    this.PageLoading.emit(true);
+  private HideLoading() {
+    this.RequestsLoading <= 1 ? 0 : this.RequestsLoading -= 1;
+    this.RequestsLoadingCounter.emit(this.RequestsLoading);
   }
 
-    private HideLoading() {
-    this.PageLoading.emit(false);
+  private UserLoggedIn() {
+    this.LoggedIn = true;
+    this.LoggedInStatus.emit(this.LoggedIn);
+  }
+
+  private UserLoggedOut() {
+    this.LoggedIn = false;
+    this.LoggedInStatus.emit(this.LoggedIn);
   }
 }

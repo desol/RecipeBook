@@ -4,15 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"context"
+	"strconv"
+	"strings"
 	"time"
 
-	"strconv"
-
-	"strings"
-
-	"context"
-
-	"github.com/lhj/backend/models"
+	"../models"
 )
 
 func createAccountHandlers() {

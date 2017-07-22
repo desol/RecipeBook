@@ -4,14 +4,11 @@ import { RouterModule, Routes, DefaultUrlSerializer } from '@angular/router';
 import { LoginComponent } from '../components/lhj.login';
 import { AccountComponent } from '../components/lhj.account';
 
-import { AuthGuard } from '../services/authguard';
-import { RootPathGuard } from '../services/rootpathguard';
-
 const AppRoutes: Routes = [
-  { path: '', component: LoginComponent, canActivate: [RootPathGuard] },
+  { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
-  { path: '**', component: AccountComponent, canActivate: [AuthGuard] },
+  { path: 'account', component: AccountComponent },
+  { path: '**', component: AccountComponent },
 ];
 
 @NgModule({
