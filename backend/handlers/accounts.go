@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"../models"
+	"github.com/lhj/backend/models"
 )
 
 func createAccountHandlers() {
@@ -25,19 +25,18 @@ func createAccountHandlers() {
 }
 
 func auth(w http.ResponseWriter, r *http.Request) {
-	var id models.Identity // To store basic user info.
+	id := new(models.Identity) // To store basic user info.
 
 	switch r.Method {
 	// Logs the user in and returns a token
 	case "POST":
-		un, pw, ok := r.BasicAuth() // Get the basic auth request info.
-		if !ok {
-			// Return the unexpected error.
-			http.Error(w, "Model State Not Valid.", http.StatusBadRequest)
-			return
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(id) // Get the requested password
+		if err != nil {
+			http.Error(w, "Error Decoding ID. Message: "+err.Error(), http.StatusInternalServerError)
 		}
 		// Log the user in using the username and password from the basic auth
-		id, err := models.Login(strings.ToLower(strings.TrimSpace(un)), strings.TrimSpace(pw))
+		id, err = models.Login(strings.ToLower(strings.ToLower(strings.TrimSpace(id.Email))), strings.TrimSpace(id.Password))
 		if err != nil {
 			// Either bad credentials or the user was locked out or something unexpected
 			http.Error(w, "Failed to validate credentials. Message: "+err.Error(), http.StatusUnauthorized)
@@ -70,7 +69,7 @@ func auth(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid Token Expiration: "+err.Error(), http.StatusUnauthorized)
 			return
 		}
-		err = models.CheckToken(&id)
+		err = models.CheckToken(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return

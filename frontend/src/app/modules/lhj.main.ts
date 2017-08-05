@@ -13,6 +13,7 @@ import {
 } from '@angular/material';
 
 // Components
+import { MenuComponent } from '../components/lhj.menu';
 import { LoginComponent } from '../components/lhj.login';
 import { AccountComponent } from '../components/lhj.account';
 import { ProgressBarComponent } from '../components/lhj.progressbar'
@@ -36,26 +37,27 @@ export class MainComponent {
 @NgModule({
   declarations: [
     MainComponent,
+    MenuComponent,
     LoginComponent,
     AccountComponent,
     ProgressBarComponent,
   ],
   imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
     AppRouting,
-    BrowserAnimationsModule,
-    FlexLayoutModule,
-    MdButtonModule,
-    MdCardModule,
+    FormsModule,
     MdMenuModule,
-    MdToolbarModule,
     MdIconModule,
+    MdCardModule,
     MdInputModule,
-    MdSnackBarModule,
+    BrowserModule,
+    MdButtonModule,
     MdTooltipModule,
+    MdToolbarModule,
+    MdSnackBarModule,
+    HttpClientModule,
+    FlexLayoutModule,
     MdProgressBarModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     Session,

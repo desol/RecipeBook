@@ -51,19 +51,19 @@ type Identity struct {
 }
 
 // Login logs a user into the database
-func Login(email string, pw string) (Identity, error) {
+func Login(email string, pw string) (*Identity, error) {
 	var user UserInfo
 
 	err := db.One("Email", email, &user)
 	if err != nil {
-		return Identity{}, err
+		return new(Identity), err
 	}
 
 	if user.Locked {
 		if time.Now().After(user.LockTime) {
 			user.Locked = false
 		} else {
-			return Identity{}, fmt.Errorf("this account is locked")
+			return new(Identity), fmt.Errorf("this account is locked")
 		}
 	}
 
@@ -75,23 +75,23 @@ func Login(email string, pw string) (Identity, error) {
 			user.Locked = true
 			user.LockTime = time.Now().Add(time.Hour * time.Duration(24))
 		}
-		return Identity{}, err
+		return new(Identity), err
 	}
 
 	uid := uuid.NewV4()
 
 	user.Token, err = uid.MarshalText()
 	if err != nil {
-		return Identity{}, err
+		return new(Identity), err
 	}
 	user.TokenExpires = time.Now().Add(time.Hour * 120).UTC().Unix()
 
 	err = db.Update(&user)
 	if err != nil {
-		return Identity{}, err
+		return new(Identity), err
 	}
 
-	return Identity{Pk: user.Pk, Email: user.Email, DisplayName: user.DisplayName, Token: string(user.Token), Expires: user.TokenExpires}, nil
+	return &Identity{Pk: user.Pk, Email: user.Email, DisplayName: user.DisplayName, Token: string(user.Token), Expires: user.TokenExpires}, nil
 }
 
 // CheckToken : Checks if a user's session is valid
