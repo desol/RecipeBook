@@ -3,10 +3,20 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { EventCalendarComponent } from './event-calendar/event-calendar.component';
+import { ResumeComponent } from './resume/resume.component';
+import { AboutMeComponent } from './about-me/about-me.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    EventCalendarComponent,
+    ResumeComponent,
+    AboutMeComponent,
+    NavigationComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

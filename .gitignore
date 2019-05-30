@@ -4,6 +4,7 @@
 lhj/dist
 lhj/tmp
 lhj/out-tsc
+wwwroot
 # Only exists if Bazel was run
 lhj/bazel-out
 
